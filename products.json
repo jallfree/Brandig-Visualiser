@@ -1,0 +1,54 @@
+{
+  "products": [
+    {
+      "id": "freeze-300ac-lux",
+      "name": "FREEZE 300AC LUX",
+      "category": "freezer",
+      "areas": [
+        "front",
+        "side"
+      ],
+      "hasOverlay": true,
+      "images": {
+        "main": "main.png",
+        "mask-front": "mask-front.png",
+        "mask-side": "mask-side.png",
+        "overlay": "overlay.png"
+      }
+    },
+    {
+      "id": "cold-578t",
+      "name": "COLD 578T",
+      "category": "fridge",
+      "areas": [
+        "side",
+        "canopy",
+        "glass"
+      ],
+      "hasOverlay": true,
+      "images": {
+        "main": "main.png",
+        "overlay": "overlay.png",
+        "mask-glass": "mask-glass.png",
+        "mask-canopy": "mask-canopy.png",
+        "mask-side": "mask-side.png"
+      }
+    },
+    {
+      "id": "scoop-3ff",
+      "name": "SCOOP 3FF",
+      "category": "freezer",
+      "areas": [
+        "front",
+        "side"
+      ],
+      "hasOverlay": true,
+      "images": {
+        "mask-front": "mask-front.png",
+        "main": "main.png",
+        "mask-side": "mask-side.png",
+        "overlay": "overlay.png"
+      }
+    }
+  ]
+}

@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings - Staycold Branding Visualiser</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #1a1a2e;
+            color: #fff;
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .back-btn {
+            padding: 10px 16px;
+            background: #3a4a6a;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            transition: background 0.2s;
+        }
+
+        .back-btn:hover {
+            background: #4a5a7a;
+        }
+
+        h1 {
+            font-weight: 300;
+            font-size: 2rem;
+            color: #fff;
+        }
+
+        .main-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+
+        .panel {
+            background: #16213e;
+            border-radius: 12px;
+            padding: 24px;
+        }
+
+        .panel-title {
+            font-size: 1.2rem;
+            font-weight: 500;
+            color: #4ecdc4;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #2a3a5a;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.85rem;
+            color: #aaa;
+            margin-bottom: 8px;
+        }
+
+        .form-group input[type="text"],
+        .form-group select {
+            width: 100%;
+            padding: 12px;
+            background: #0f0f1a;
+            border: 1px solid #3a4a6a;
+            border-radius: 6px;
+            color: #fff;
+            font-size: 0.95rem;
+        }
+
+        .form-group input[type="text"]:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #4ecdc4;
+        }
+
+        .checkbox-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .checkbox-item input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: #4ecdc4;
+        }
+
+        .checkbox-item label {
+            font-size: 0.9rem;
+            color: #ccc;
+            margin: 0;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-primary {
+            background: #4ecdc4;
+            color: #1a1a2e;
+            font-weight: 600;
+        }
+
+        .btn-primary:hover {
+            background: #3dbdb5;
+        }
+
+        .btn-secondary {
+            background: #3a4a6a;
+            color: #fff;
+        }
+
+        .btn-secondary:hover {
+            background: #4a5a7a;
+        }
+
+        .btn-danger {
+            background: #ff6b6b;
+            color: #fff;
+        }
+
+        .btn-danger:hover {
+            background: #ee5a5a;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .product-list {
+            list-style: none;
+        }
+
+        .product-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px;
+            background: #0f0f1a;
+            border-radius: 6px;
+            margin-bottom: 8px;
+        }
+
+        .product-item:hover {
+            background: #1a1a2e;
+        }
+
+        .product-item-info {
+            flex: 1;
+        }
+
+        .product-item-name {
+            font-weight: 500;
+            color: #fff;
+        }
+
+        .product-item-meta {
+            font-size: 0.8rem;
+            color: #888;
+            margin-top: 4px;
+        }
+
+        .product-item-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .product-item-actions .btn {
+            padding: 6px 12px;
+            font-size: 0.8rem;
+        }
+
+        .empty-list {
+            text-align: center;
+            padding: 40px;
+            color: #888;
+        }
+
+        .image-upload-section {
+            margin-top: 24px;
+            padding-top: 20px;
+            border-top: 1px solid #2a3a5a;
+        }
+
+        .image-upload-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 16px;
+        }
+
+        .image-upload-box {
+            text-align: center;
+        }
+
+        .image-upload-box label {
+            display: block;
+            font-size: 0.75rem;
+            color: #888;
+            margin-bottom: 8px;
+        }
+
+        .image-dropzone {
+            border: 2px dashed #3a4a6a;
+            border-radius: 8px;
+            padding: 20px 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: rgba(255,255,255,0.02);
+            min-height: 100px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .image-dropzone:hover {
+            border-color: #5a7aba;
+            background: rgba(255,255,255,0.05);
+        }
+
+        .image-dropzone.dragover {
+            border-color: #4ecdc4;
+            background: rgba(78, 205, 196, 0.1);
+        }
+
+        .image-dropzone.has-image {
+            border-style: solid;
+            border-color: #4ecdc4;
+            padding: 8px;
+        }
+
+        .image-dropzone img {
+            max-width: 100%;
+            max-height: 80px;
+            object-fit: contain;
+            border-radius: 4px;
+        }
+
+        .image-dropzone .placeholder {
+            color: #666;
+            font-size: 0.75rem;
+        }
+
+        .image-dropzone .remove-btn {
+            margin-top: 8px;
+            padding: 4px 8px;
+            font-size: 0.7rem;
+            background: #ff6b6b;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .image-dropzone input[type="file"] {
+            display: none;
+        }
+
+        .alert {
+            padding: 12px 16px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+        }
+
+        .alert-success {
+            background: rgba(78, 205, 196, 0.2);
+            color: #4ecdc4;
+            border: 1px solid #4ecdc4;
+        }
+
+        .alert-error {
+            background: rgba(255, 107, 107, 0.2);
+            color: #ff6b6b;
+            border: 1px solid #ff6b6b;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        @media (max-width: 900px) {
+            .main-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <a href="/" class="back-btn">Back to Menu</a>
+            <h1>Staycold Branding Visualiser - Settings</h1>
+        </div>
+
+        <div id="alert" class="alert hidden"></div>
+
+        <div class="main-layout">
+            <div class="panel">
+                <h2 class="panel-title">Add / Edit Product</h2>
+                <p style="color: #888; font-size: 0.85rem; margin-bottom: 20px;">Create product and assign branding areas</p>
+
+                <form id="productForm">
+                    <input type="hidden" id="editId" value="">
+
+                    <div class="form-group">
+                        <label for="productName">Product Name *</label>
+                        <input type="text" id="productName" placeholder="e.g. Freeze 300AC Lux" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="productCategory">Category *</label>
+                        <select id="productCategory" required>
+                            <option value="">Select category...</option>
+                            <option value="freezer">Freezer</option>
+                            <option value="fridge">Fridge</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Branding Areas *</label>
+                        <div class="checkbox-grid">
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="areaFront" value="front">
+                                <label for="areaFront">Front Panel</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="areaSide" value="side">
+                                <label for="areaSide">Side Panel</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="areaCanopy" value="canopy">
+                                <label for="areaCanopy">Light Canopy</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="areaGlass" value="glass">
+                                <label for="areaGlass">Door Glass</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="image-upload-section" id="imageUploadSection" style="display: none;">
+                        <h3 style="font-size: 0.9rem; color: #aaa; margin-bottom: 16px;">Product Images</h3>
+                        <p style="font-size: 0.8rem; color: #666; margin-bottom: 16px;">
+                            Upload 2000x2000 PNG images for this product.
+                        </p>
+
+                        <div class="image-upload-grid" id="imageUploadGrid">
+                            <!-- Dynamic image upload boxes will be added here -->
+                        </div>
+                    </div>
+
+                    <div class="btn-group">
+                        <button type="submit" class="btn btn-primary" id="saveBtn">Save Product</button>
+                        <button type="button" class="btn btn-secondary" id="cancelBtn">Cancel</button>
+                        <a href="/" class="btn btn-primary" id="doneBtn" style="display: none; text-decoration: none; text-align: center;">Done - Back to Menu</a>
+                    </div>
+                </form>
+            </div>
+
+            <div class="panel">
+                <h2 class="panel-title">Existing Products</h2>
+
+                <ul class="product-list" id="productList">
+                    <li class="empty-list">Loading products...</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const AREA_LABELS = {
+            front: 'Front Panel',
+            side: 'Side Panel',
+            canopy: 'Light Canopy',
+            glass: 'Door Glass'
+        };
+
+        const IMAGE_TYPES = {
+            main: 'Main Image',
+            'mask-front': 'Front Mask',
+            'mask-side': 'Side Mask',
+            'mask-canopy': 'Canopy Mask',
+            'mask-glass': 'Glass Mask',
+            overlay: 'Overlay (Shadows/Highlights)'
+        };
+
+        let products = [];
+        let editingProduct = null;
+
+        // DOM elements
+        const productForm = document.getElementById('productForm');
+        const productList = document.getElementById('productList');
+        const alertEl = document.getElementById('alert');
+        const editIdInput = document.getElementById('editId');
+        const productNameInput = document.getElementById('productName');
+        const productCategorySelect = document.getElementById('productCategory');
+        const imageUploadGrid = document.getElementById('imageUploadGrid');
+        const imageUploadSection = document.getElementById('imageUploadSection');
+
+        function showAlert(message, type = 'success') {
+            alertEl.textContent = message;
+            alertEl.className = `alert alert-${type}`;
+            alertEl.classList.remove('hidden');
+            setTimeout(() => alertEl.classList.add('hidden'), 5000);
+        }
+
+        function getSelectedAreas() {
+            const areas = [];
+            if (document.getElementById('areaFront').checked) areas.push('front');
+            if (document.getElementById('areaSide').checked) areas.push('side');
+            if (document.getElementById('areaCanopy').checked) areas.push('canopy');
+            if (document.getElementById('areaGlass').checked) areas.push('glass');
+            return areas;
+        }
+
+        function setSelectedAreas(areas) {
+            document.getElementById('areaFront').checked = areas.includes('front');
+            document.getElementById('areaSide').checked = areas.includes('side');
+            document.getElementById('areaCanopy').checked = areas.includes('canopy');
+            document.getElementById('areaGlass').checked = areas.includes('glass');
+        }
+
+        async function loadProducts() {
+            try {
+                const response = await fetch('/api/products');
+                products = await response.json();
+                renderProductList();
+            } catch (error) {
+                console.error('Error loading products:', error);
+                productList.innerHTML = '<li class="empty-list">Error loading products</li>';
+            }
+        }
+
+        function renderProductList() {
+            if (products.length === 0) {
+                productList.innerHTML = '<li class="empty-list">No products yet. Add your first product!</li>';
+                return;
+            }
+
+            productList.innerHTML = products.map(product => `
+                <li class="product-item">
+                    <div class="product-item-info">
+                        <div class="product-item-name">${product.name}</div>
+                        <div class="product-item-meta">
+                            ${product.category.charAt(0).toUpperCase() + product.category.slice(1)} |
+                            ${product.areas.map(a => AREA_LABELS[a] || a).join(', ')}
+                        </div>
+                    </div>
+                    <div class="product-item-actions">
+                        <button class="btn btn-secondary" onclick="editProduct('${product.id}')">Edit</button>
+                        <button class="btn btn-danger" onclick="deleteProduct('${product.id}')">Delete</button>
+                    </div>
+                </li>
+            `).join('');
+        }
+
+        function resetForm() {
+            editIdInput.value = '';
+            productNameInput.value = '';
+            productCategorySelect.value = '';
+            setSelectedAreas([]);
+            editingProduct = null;
+            imageUploadGrid.innerHTML = '';
+            document.getElementById('saveBtn').textContent = 'Save Product';
+            document.getElementById('doneBtn').style.display = 'none';
+            document.getElementById('imageUploadSection').style.display = 'none';
+        }
+
+        function buildImageUploadUI(product) {
+            if (!product || !product.id) {
+                document.getElementById('imageUploadSection').style.display = 'none';
+                return;
+            }
+
+            // Show the image upload section
+            document.getElementById('imageUploadSection').style.display = 'block';
+
+            // Build list of required images
+            const requiredImages = ['main'];
+            for (const area of product.areas) {
+                requiredImages.push(`mask-${area}`);
+            }
+            requiredImages.push('overlay');
+
+            imageUploadGrid.innerHTML = requiredImages.map(imageType => {
+                const hasImage = product.images && product.images[imageType];
+                const imageUrl = hasImage ? `/products/${product.id}/${product.images[imageType]}` : '';
+                const label = IMAGE_TYPES[imageType] || imageType;
+                const isOptional = imageType === 'overlay';
+
+                return `
+                    <div class="image-upload-box">
+                        <label>${label}${isOptional ? ' (optional)' : ' *'}</label>
+                        <div class="image-dropzone ${hasImage ? 'has-image' : ''}"
+                             id="dropzone-${imageType}"
+                             data-type="${imageType}"
+                             data-product="${product.id}">
+                            ${hasImage
+                                ? `<img src="${imageUrl}" alt="${label}">
+                                   <button type="button" class="remove-btn" onclick="removeImage('${product.id}', '${imageType}')">Remove</button>`
+                                : `<span class="placeholder">Drop or click</span>`
+                            }
+                            <input type="file" accept="image/png,image/jpeg" onchange="uploadImage(this, '${product.id}', '${imageType}')">
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            // Setup drag/drop handlers
+            requiredImages.forEach(imageType => {
+                const dropzone = document.getElementById(`dropzone-${imageType}`);
+                if (dropzone) {
+                    dropzone.addEventListener('click', (e) => {
+                        if (e.target.tagName !== 'BUTTON') {
+                            dropzone.querySelector('input[type="file"]').click();
+                        }
+                    });
+                    dropzone.addEventListener('dragover', (e) => {
+                        e.preventDefault();
+                        dropzone.classList.add('dragover');
+                    });
+                    dropzone.addEventListener('dragleave', () => {
+                        dropzone.classList.remove('dragover');
+                    });
+                    dropzone.addEventListener('drop', (e) => {
+                        e.preventDefault();
+                        dropzone.classList.remove('dragover');
+                        if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+                            uploadImageFile(e.dataTransfer.files[0], product.id, imageType);
+                        }
+                    });
+                }
+            });
+        }
+
+        async function uploadImage(input, productId, imageType) {
+            if (input.files && input.files[0]) {
+                await uploadImageFile(input.files[0], productId, imageType);
+            }
+        }
+
+        async function uploadImageFile(file, productId, imageType) {
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('type', imageType);
+
+            try {
+                const response = await fetch(`/api/products/${productId}/upload`, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (response.ok) {
+                    showAlert(`${IMAGE_TYPES[imageType]} uploaded successfully!`);
+                    await loadProducts();
+                    // Refresh the editing view
+                    const product = products.find(p => p.id === productId);
+                    if (product) {
+                        editingProduct = product;
+                        buildImageUploadUI(product);
+                    }
+                } else {
+                    const error = await response.json();
+                    showAlert(error.error || 'Upload failed', 'error');
+                }
+            } catch (error) {
+                console.error('Upload error:', error);
+                showAlert('Upload failed', 'error');
+            }
+        }
+
+        async function removeImage(productId, imageType) {
+            if (!confirm(`Remove ${IMAGE_TYPES[imageType]}?`)) return;
+
+            try {
+                const response = await fetch(`/api/products/${productId}/images/${imageType}`, {
+                    method: 'DELETE'
+                });
+
+                if (response.ok) {
+                    showAlert(`${IMAGE_TYPES[imageType]} removed`);
+                    await loadProducts();
+                    const product = products.find(p => p.id === productId);
+                    if (product) {
+                        editingProduct = product;
+                        buildImageUploadUI(product);
+                    }
+                }
+            } catch (error) {
+                console.error('Delete error:', error);
+                showAlert('Failed to remove image', 'error');
+            }
+        }
+
+        function editProduct(productId) {
+            const product = products.find(p => p.id === productId);
+            if (!product) return;
+
+            editingProduct = product;
+            editIdInput.value = product.id;
+            productNameInput.value = product.name;
+            productCategorySelect.value = product.category;
+            setSelectedAreas(product.areas);
+
+            document.getElementById('saveBtn').textContent = 'Update Product';
+            document.getElementById('doneBtn').style.display = 'inline-block';
+            buildImageUploadUI(product);
+
+            // Scroll to form
+            productForm.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        async function deleteProduct(productId) {
+            const product = products.find(p => p.id === productId);
+            if (!product) return;
+
+            if (!confirm(`Delete "${product.name}"? This will also delete all its images.`)) return;
+
+            try {
+                const response = await fetch(`/api/products/${productId}`, {
+                    method: 'DELETE'
+                });
+
+                if (response.ok) {
+                    showAlert(`"${product.name}" deleted`);
+                    await loadProducts();
+                    if (editingProduct && editingProduct.id === productId) {
+                        resetForm();
+                    }
+                } else {
+                    showAlert('Failed to delete product', 'error');
+                }
+            } catch (error) {
+                console.error('Delete error:', error);
+                showAlert('Failed to delete product', 'error');
+            }
+        }
+
+        productForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const name = productNameInput.value.trim();
+            const category = productCategorySelect.value;
+            const areas = getSelectedAreas();
+
+            if (!name || !category || areas.length === 0) {
+                showAlert('Please fill in all required fields', 'error');
+                return;
+            }
+
+            const productData = { name, category, areas };
+            const editId = editIdInput.value;
+
+            try {
+                let response;
+                if (editId) {
+                    // Update existing
+                    response = await fetch(`/api/products/${editId}`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(productData)
+                    });
+                } else {
+                    // Create new
+                    response = await fetch('/api/products', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(productData)
+                    });
+                }
+
+                if (response.ok) {
+                    const savedProduct = await response.json();
+                    showAlert(editId ? 'Product updated!' : 'Product created!');
+                    await loadProducts();
+
+                    // If new product, switch to edit mode to allow image uploads
+                    if (!editId) {
+                        editProduct(savedProduct.id);
+                    } else {
+                        // Refresh image upload UI with new areas
+                        const product = products.find(p => p.id === editId);
+                        if (product) {
+                            buildImageUploadUI(product);
+                        }
+                    }
+                } else {
+                    const error = await response.json();
+                    showAlert(error.error || 'Failed to save product', 'error');
+                }
+            } catch (error) {
+                console.error('Save error:', error);
+                showAlert('Failed to save product', 'error');
+            }
+        });
+
+        document.getElementById('cancelBtn').addEventListener('click', resetForm);
+
+        // Initialize
+        loadProducts();
+    </script>
+</body>
+</html>

@@ -1,0 +1,1286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Staycold Branding Visualiser</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #1a1a2e;
+            color: #fff;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .back-btn {
+            padding: 10px 16px;
+            background: #3a4a6a;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            transition: background 0.2s;
+            border: none;
+            cursor: pointer;
+        }
+
+        .back-btn:hover {
+            background: #4a5a7a;
+        }
+
+        h1 {
+            font-weight: 300;
+            font-size: 1.8rem;
+            color: #eee;
+        }
+
+        .main-layout {
+            display: grid;
+            grid-template-columns: minmax(280px, 320px) 1fr;
+            gap: 30px;
+            max-width: 100%;
+            overflow: hidden;
+        }
+
+        .controls-panel {
+            background: #16213e;
+            border-radius: 12px;
+            padding: 24px;
+            height: fit-content;
+            min-width: 0;
+            overflow: hidden;
+        }
+
+        .preview-panel {
+            background: #16213e;
+            border-radius: 12px;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .section {
+            margin-bottom: 24px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #2a3a5a;
+        }
+
+        .section:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .section-title {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #888;
+            margin-bottom: 12px;
+        }
+
+        .upload-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .upload-box {
+            text-align: center;
+            min-width: 0;
+            overflow: hidden;
+        }
+
+        .upload-box-label {
+            font-size: 0.75rem;
+            color: #888;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .upload-box-label .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+
+        .upload-area {
+            border: 2px dashed #3a4a6a;
+            border-radius: 8px;
+            padding: 15px 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: rgba(255,255,255,0.02);
+        }
+
+        .upload-area:hover {
+            border-color: #5a7aba;
+            background: rgba(255,255,255,0.05);
+        }
+
+        .upload-area.dragover {
+            border-color: #4ecdc4;
+            background: rgba(78, 205, 196, 0.1);
+        }
+
+        .upload-area.has-artwork {
+            border-style: solid;
+            border-color: #4ecdc4;
+        }
+
+        .upload-icon {
+            font-size: 24px;
+            margin-bottom: 4px;
+            opacity: 0.6;
+            pointer-events: none;
+        }
+
+        .upload-text {
+            color: #aaa;
+            font-size: 0.7rem;
+            pointer-events: none;
+        }
+
+        .upload-text span {
+            color: #4ecdc4;
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        .thumbnail-preview {
+            margin-top: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px;
+            background: rgba(0,0,0,0.2);
+            border-radius: 6px;
+            max-width: 100%;
+            overflow: hidden;
+        }
+
+        .thumbnail-preview img {
+            width: 40px;
+            height: 40px;
+            min-width: 40px;
+            object-fit: contain;
+            border-radius: 4px;
+            background: #fff;
+        }
+
+        .thumbnail-info {
+            flex: 1;
+            font-size: 0.65rem;
+            color: #888;
+            overflow: hidden;
+            min-width: 0;
+        }
+
+        .thumbnail-info .filename {
+            color: #ccc;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 100%;
+            display: block;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-bottom: 10px;
+        }
+
+        .btn-primary {
+            background: #4ecdc4;
+            color: #1a1a2e;
+            font-weight: 600;
+        }
+
+        .btn-primary:hover {
+            background: #3dbdb5;
+        }
+
+        .btn-secondary {
+            background: #3a4a6a;
+            color: #fff;
+        }
+
+        .btn-secondary:hover {
+            background: #4a5a7a;
+        }
+
+        .btn-small {
+            padding: 4px 8px;
+            font-size: 0.65rem;
+            margin-top: 6px;
+            width: auto;
+            margin-bottom: 0;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .canvas-container {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+        }
+
+        #previewCanvas {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+            background: #ffffff;
+            cursor: default;
+        }
+
+        #previewCanvas.dragging {
+            cursor: grabbing;
+        }
+
+        #previewCanvas.hovering-handle {
+            cursor: grab;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: #4ecdc4;
+        }
+
+        .checkbox-group label {
+            font-size: 0.85rem;
+            color: #aaa;
+        }
+
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.8);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .loading-overlay.active {
+            display: flex;
+        }
+
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 3px solid #3a4a6a;
+            border-top-color: #4ecdc4;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .status-bar {
+            margin-top: 16px;
+            padding: 12px;
+            background: rgba(78, 205, 196, 0.1);
+            border-radius: 6px;
+            font-size: 0.85rem;
+            color: #4ecdc4;
+            text-align: center;
+        }
+
+        .instructions {
+            background: rgba(78, 205, 196, 0.1);
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 16px;
+            font-size: 0.8rem;
+            color: #aaa;
+            line-height: 1.5;
+        }
+
+        .instructions strong {
+            color: #4ecdc4;
+        }
+
+        .panel-select {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .panel-select-btn {
+            flex: 1;
+            min-width: 70px;
+            padding: 8px;
+            border: 2px solid #3a4a6a;
+            background: transparent;
+            color: #aaa;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.75rem;
+            transition: all 0.2s;
+        }
+
+        .panel-select-btn.active {
+            border-color: #4ecdc4;
+            color: #4ecdc4;
+            background: rgba(78, 205, 196, 0.1);
+        }
+
+        .error-state {
+            text-align: center;
+            padding: 60px;
+        }
+
+        .error-state h2 {
+            color: #ff6b6b;
+            margin-bottom: 16px;
+        }
+
+        @media (max-width: 900px) {
+            .main-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <a href="/" class="back-btn">Back to Menu</a>
+            <h1>Staycold Branding Visualiser - <span id="pageTitle">Loading...</span></h1>
+        </div>
+
+        <div id="mainContent">
+            <div class="loading-overlay active" id="initialLoader">
+                <div class="loading-spinner"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-spinner"></div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script>
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+        // Area colors for UI
+        const AREA_COLORS = {
+            front: '#4ecdc4',
+            side: '#ff6b6b',
+            canopy: '#ffd93d',
+            glass: '#6bcbff'
+        };
+
+        const AREA_LABELS = {
+            front: 'Front',
+            side: 'Side',
+            canopy: 'Canopy',
+            glass: 'Glass'
+        };
+
+        // State
+        const state = {
+            product: null,
+            mainImage: null,
+            overlayImage: null,
+            areas: {},  // Dynamic areas based on product
+            activeArea: null,
+            dragging: false,
+            dragCornerIndex: -1,
+            dragArea: null
+        };
+
+        const HANDLE_RADIUS = 12;
+
+        let canvas, ctx;
+        const loadingOverlay = document.getElementById('loadingOverlay');
+
+        // Get product ID from URL
+        function getProductId() {
+            const params = new URLSearchParams(window.location.search);
+            return params.get('product');
+        }
+
+        // Load image via fetch (for CORS)
+        async function loadImage(src) {
+            const response = await fetch(src);
+            if (!response.ok) throw new Error('HTTP ' + response.status);
+            const blob = await response.blob();
+            const url = URL.createObjectURL(blob);
+
+            return new Promise((resolve, reject) => {
+                const img = new Image();
+                img.onload = () => resolve(img);
+                img.onerror = () => reject(new Error('Failed to load: ' + src));
+                img.src = url;
+            });
+        }
+
+        // Extract mask from overlay PNG
+        function extractPanelMask(overlayImg) {
+            const w = overlayImg.width;
+            const h = overlayImg.height;
+            const tempCanvas = document.createElement('canvas');
+            tempCanvas.width = w;
+            tempCanvas.height = h;
+            const tempCtx = tempCanvas.getContext('2d');
+            tempCtx.drawImage(overlayImg, 0, 0);
+            const imageData = tempCtx.getImageData(0, 0, w, h);
+            const data = imageData.data;
+            const mask = new Uint8Array(w * h);
+            for (let i = 0; i < w * h; i++) {
+                mask[i] = data[i * 4 + 3] > 10 ? 1 : 0;
+            }
+            return { mask, width: w, height: h };
+        }
+
+        // Extract clipping path from mask
+        function extractClipPath(maskData) {
+            const { mask, width, height } = maskData;
+            const leftEdge = [];
+            const rightEdge = [];
+
+            for (let y = 0; y < height; y++) {
+                let leftX = -1, rightX = -1;
+                for (let x = 0; x < width; x++) {
+                    if (mask[y * width + x]) { leftX = x; break; }
+                }
+                for (let x = width - 1; x >= 0; x--) {
+                    if (mask[y * width + x]) { rightX = x; break; }
+                }
+                if (leftX >= 0) leftEdge.push({ x: leftX, y });
+                if (rightX >= 0) rightEdge.push({ x: rightX, y });
+            }
+
+            rightEdge.reverse();
+            const fullPath = [...leftEdge, ...rightEdge];
+            const step = Math.max(1, Math.floor(fullPath.length / 200));
+            return fullPath.filter((_, i) => i % step === 0);
+        }
+
+        // Find panel corners from mask
+        function findPanelCorners(maskData) {
+            const { mask, width, height } = maskData;
+            const edgePoints = [];
+
+            for (let y = 0; y < height; y++) {
+                let leftX = -1, rightX = -1;
+                for (let x = 0; x < width; x++) {
+                    if (mask[y * width + x]) { leftX = x; break; }
+                }
+                for (let x = width - 1; x >= 0; x--) {
+                    if (mask[y * width + x]) { rightX = x; break; }
+                }
+                if (leftX >= 0) edgePoints.push({ x: leftX, y, side: 'left' });
+                if (rightX >= 0 && rightX !== leftX) edgePoints.push({ x: rightX, y, side: 'right' });
+            }
+
+            if (edgePoints.length < 4) {
+                let minX = width, maxX = 0, minY = height, maxY = 0;
+                for (const p of edgePoints) {
+                    minX = Math.min(minX, p.x);
+                    maxX = Math.max(maxX, p.x);
+                    minY = Math.min(minY, p.y);
+                    maxY = Math.max(maxY, p.y);
+                }
+                return [
+                    { x: minX, y: minY }, { x: maxX, y: minY },
+                    { x: maxX, y: maxY }, { x: minX, y: maxY }
+                ];
+            }
+
+            const cx = edgePoints.reduce((s, p) => s + p.x, 0) / edgePoints.length;
+            const cy = edgePoints.reduce((s, p) => s + p.y, 0) / edgePoints.length;
+
+            let topLeft = null, topRight = null, bottomLeft = null, bottomRight = null;
+            let tlDist = 0, trDist = 0, blDist = 0, brDist = 0;
+
+            for (const p of edgePoints) {
+                const dx = p.x - cx;
+                const dy = p.y - cy;
+
+                if (dx <= 0 && dy <= 0) {
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+                    if (dist > tlDist) { tlDist = dist; topLeft = p; }
+                }
+                if (dx >= 0 && dy <= 0) {
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+                    if (dist > trDist) { trDist = dist; topRight = p; }
+                }
+                if (dx >= 0 && dy >= 0) {
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+                    if (dist > brDist) { brDist = dist; bottomRight = p; }
+                }
+                if (dx <= 0 && dy >= 0) {
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+                    if (dist > blDist) { blDist = dist; bottomLeft = p; }
+                }
+            }
+
+            if (!topLeft) topLeft = edgePoints[0];
+            if (!topRight) topRight = edgePoints[0];
+            if (!bottomRight) bottomRight = edgePoints[0];
+            if (!bottomLeft) bottomLeft = edgePoints[0];
+
+            return [
+                { x: topLeft.x, y: topLeft.y },
+                { x: topRight.x, y: topRight.y },
+                { x: bottomRight.x, y: bottomRight.y },
+                { x: bottomLeft.x, y: bottomLeft.y }
+            ];
+        }
+
+        // Initialize artwork corners as centered rectangle
+        function initArtworkCorners(panelCorners, artworkWidth, artworkHeight) {
+            const minX = Math.min(...panelCorners.map(c => c.x));
+            const maxX = Math.max(...panelCorners.map(c => c.x));
+            const minY = Math.min(...panelCorners.map(c => c.y));
+            const maxY = Math.max(...panelCorners.map(c => c.y));
+
+            const panelWidth = maxX - minX;
+            const panelHeight = maxY - minY;
+            const panelCenterX = (minX + maxX) / 2;
+            const panelCenterY = (minY + maxY) / 2;
+
+            let rectWidth, rectHeight;
+            const fitScale = 0.85;
+
+            if (artworkWidth && artworkHeight) {
+                const artAspect = artworkWidth / artworkHeight;
+                if (artAspect > panelWidth / panelHeight) {
+                    rectWidth = panelWidth * fitScale;
+                    rectHeight = rectWidth / artAspect;
+                } else {
+                    rectHeight = panelHeight * fitScale;
+                    rectWidth = rectHeight * artAspect;
+                }
+            } else {
+                rectWidth = panelWidth * fitScale;
+                rectHeight = panelHeight * fitScale;
+            }
+
+            const left = panelCenterX - rectWidth / 2;
+            const right = panelCenterX + rectWidth / 2;
+            const top = panelCenterY - rectHeight / 2;
+            const bottom = panelCenterY + rectHeight / 2;
+
+            return [
+                { x: left, y: top }, { x: right, y: top },
+                { x: right, y: bottom }, { x: left, y: bottom }
+            ];
+        }
+
+        // Homography functions
+        function computeHomography(srcCorners, dstCorners) {
+            const A = [];
+            for (let i = 0; i < 4; i++) {
+                const sx = srcCorners[i].x, sy = srcCorners[i].y;
+                const dx = dstCorners[i].x, dy = dstCorners[i].y;
+                A.push([-sx, -sy, -1, 0, 0, 0, sx * dx, sy * dx, dx]);
+                A.push([0, 0, 0, -sx, -sy, -1, sx * dy, sy * dy, dy]);
+            }
+            const n = 8;
+            const aug = A.map(row => [...row.slice(0, 8), -row[8]]);
+            for (let col = 0; col < n; col++) {
+                let maxRow = col;
+                for (let row = col + 1; row < n; row++) {
+                    if (Math.abs(aug[row][col]) > Math.abs(aug[maxRow][col])) maxRow = row;
+                }
+                [aug[col], aug[maxRow]] = [aug[maxRow], aug[col]];
+                for (let row = col + 1; row < n; row++) {
+                    const f = aug[row][col] / aug[col][col];
+                    for (let j = col; j <= n; j++) aug[row][j] -= f * aug[col][j];
+                }
+            }
+            const h = new Array(9).fill(0);
+            h[8] = 1;
+            for (let i = n - 1; i >= 0; i--) {
+                h[i] = aug[i][n];
+                for (let j = i + 1; j < n; j++) h[i] -= aug[i][j] * h[j];
+                h[i] /= aug[i][i];
+            }
+            return h;
+        }
+
+        function inverseHomography(h) {
+            const m = [[h[0], h[1], h[2]], [h[3], h[4], h[5]], [h[6], h[7], h[8]]];
+            const det = m[0][0] * (m[1][1] * m[2][2] - m[1][2] * m[2][1]) -
+                       m[0][1] * (m[1][0] * m[2][2] - m[1][2] * m[2][0]) +
+                       m[0][2] * (m[1][0] * m[2][1] - m[1][1] * m[2][0]);
+            return [
+                (m[1][1] * m[2][2] - m[1][2] * m[2][1]) / det,
+                (m[0][2] * m[2][1] - m[0][1] * m[2][2]) / det,
+                (m[0][1] * m[1][2] - m[0][2] * m[1][1]) / det,
+                (m[1][2] * m[2][0] - m[1][0] * m[2][2]) / det,
+                (m[0][0] * m[2][2] - m[0][2] * m[2][0]) / det,
+                (m[0][2] * m[1][0] - m[0][0] * m[1][2]) / det,
+                (m[1][0] * m[2][1] - m[1][1] * m[2][0]) / det,
+                (m[0][1] * m[2][0] - m[0][0] * m[2][1]) / det,
+                (m[0][0] * m[1][1] - m[0][1] * m[1][0]) / det
+            ];
+        }
+
+        function applyHomography(h, x, y) {
+            const w = h[6] * x + h[7] * y + h[8];
+            return { x: (h[0] * x + h[1] * y + h[2]) / w, y: (h[3] * x + h[4] * y + h[5]) / w };
+        }
+
+        // Draw artwork with perspective
+        function drawPerspectiveArtwork(artwork, artworkCorners) {
+            const corners = artworkCorners;
+            const minX = Math.max(0, Math.floor(Math.min(...corners.map(c => c.x))) - 5);
+            const maxX = Math.min(2000, Math.ceil(Math.max(...corners.map(c => c.x))) + 5);
+            const minY = Math.max(0, Math.floor(Math.min(...corners.map(c => c.y))) - 5);
+            const maxY = Math.min(2000, Math.ceil(Math.max(...corners.map(c => c.y))) + 5);
+
+            const artWidth = artwork.width;
+            const artHeight = artwork.height;
+
+            const tempCanvas = document.createElement('canvas');
+            tempCanvas.width = 2000;
+            tempCanvas.height = 2000;
+            const tempCtx = tempCanvas.getContext('2d');
+
+            const srcCanvas = document.createElement('canvas');
+            srcCanvas.width = artWidth;
+            srcCanvas.height = artHeight;
+            const srcCtx = srcCanvas.getContext('2d');
+            srcCtx.drawImage(artwork, 0, 0);
+            const srcData = srcCtx.getImageData(0, 0, artWidth, artHeight);
+
+            const srcCorners = [{ x: 0, y: 0 }, { x: 1, y: 0 }, { x: 1, y: 1 }, { x: 0, y: 1 }];
+            const h = computeHomography(srcCorners, corners);
+            const hInv = inverseHomography(h);
+
+            const destData = tempCtx.createImageData(2000, 2000);
+
+            for (let y = minY; y < maxY; y++) {
+                for (let x = minX; x < maxX; x++) {
+                    const norm = applyHomography(hInv, x, y);
+                    if (norm.x < 0 || norm.x > 1 || norm.y < 0 || norm.y > 1) continue;
+
+                    const srcX = norm.x * (artWidth - 1);
+                    const srcY = norm.y * (artHeight - 1);
+
+                    if (srcX >= 0 && srcX < artWidth - 1 && srcY >= 0 && srcY < artHeight - 1) {
+                        const x0 = Math.floor(srcX), y0 = Math.floor(srcY);
+                        const x1 = x0 + 1, y1 = y0 + 1;
+                        const xf = srcX - x0, yf = srcY - y0;
+
+                        const i00 = (y0 * artWidth + x0) * 4;
+                        const i01 = (y0 * artWidth + x1) * 4;
+                        const i10 = (y1 * artWidth + x0) * 4;
+                        const i11 = (y1 * artWidth + x1) * 4;
+                        const di = (y * 2000 + x) * 4;
+
+                        for (let c = 0; c < 4; c++) {
+                            const v = srcData.data[i00 + c] * (1 - xf) * (1 - yf) +
+                                     srcData.data[i01 + c] * xf * (1 - yf) +
+                                     srcData.data[i10 + c] * (1 - xf) * yf +
+                                     srcData.data[i11 + c] * xf * yf;
+                            destData.data[di + c] = Math.round(v);
+                        }
+                    }
+                }
+            }
+
+            tempCtx.putImageData(destData, 0, 0);
+            return tempCanvas;
+        }
+
+        // Apply clipping path
+        function applyClipPath(clipPath) {
+            if (!clipPath || clipPath.length < 3) return;
+            ctx.beginPath();
+            ctx.moveTo(clipPath[0].x, clipPath[0].y);
+            for (let i = 1; i < clipPath.length; i++) {
+                ctx.lineTo(clipPath[i].x, clipPath[i].y);
+            }
+            ctx.closePath();
+            ctx.clip();
+        }
+
+        // Draw corner handle
+        function drawHandle(x, y, color, isActive) {
+            ctx.save();
+            ctx.beginPath();
+            ctx.arc(x, y, HANDLE_RADIUS * (isActive ? 1.3 : 1), 0, Math.PI * 2);
+            ctx.fillStyle = isActive ? '#fff' : color;
+            ctx.fill();
+            ctx.strokeStyle = '#000';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+            ctx.restore();
+        }
+
+        // Draw artwork boundary
+        function drawArtworkBoundary(corners, color) {
+            ctx.save();
+            ctx.strokeStyle = color;
+            ctx.lineWidth = 3;
+            ctx.setLineDash([10, 5]);
+            ctx.beginPath();
+            ctx.moveTo(corners[0].x, corners[0].y);
+            for (let i = 1; i < corners.length; i++) {
+                ctx.lineTo(corners[i].x, corners[i].y);
+            }
+            ctx.closePath();
+            ctx.stroke();
+            ctx.restore();
+        }
+
+        // Draw panel outline from clip path
+        function drawPanelOutline(clipPath, color, label) {
+            if (!clipPath || clipPath.length < 3) return;
+
+            ctx.save();
+            ctx.strokeStyle = color;
+            ctx.lineWidth = 4;
+            ctx.setLineDash([15, 10]);
+            ctx.beginPath();
+            ctx.moveTo(clipPath[0].x, clipPath[0].y);
+            for (let i = 1; i < clipPath.length; i++) {
+                ctx.lineTo(clipPath[i].x, clipPath[i].y);
+            }
+            ctx.closePath();
+            ctx.stroke();
+
+            // Draw label in center
+            ctx.setLineDash([]);
+            ctx.fillStyle = color;
+            ctx.font = 'bold 36px -apple-system, sans-serif';
+            const cx = clipPath.reduce((s, p) => s + p.x, 0) / clipPath.length;
+            const cy = clipPath.reduce((s, p) => s + p.y, 0) / clipPath.length;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(label, cx, cy);
+            ctx.restore();
+        }
+
+        // Main render
+        function render() {
+            if (!state.mainImage || !canvas) return;
+
+            ctx.clearRect(0, 0, 2000, 2000);
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(0, 0, 2000, 2000);
+            ctx.drawImage(state.mainImage, 0, 0, 2000, 2000);
+
+            // Draw each area's artwork
+            for (const areaId of state.product.areas) {
+                const area = state.areas[areaId];
+                if (area && area.artwork && area.artworkCorners && area.clipPath) {
+                    const artCanvas = drawPerspectiveArtwork(area.artwork, area.artworkCorners);
+                    ctx.save();
+                    applyClipPath(area.clipPath);
+                    ctx.drawImage(artCanvas, 0, 0);
+                    ctx.restore();
+                }
+            }
+
+            // Draw overlay
+            if (state.overlayImage) {
+                ctx.drawImage(state.overlayImage, 0, 0, 2000, 2000);
+            }
+
+            // Draw panel outlines if enabled
+            const showOutlines = document.getElementById('showOutlines')?.checked ?? false;
+            if (showOutlines) {
+                for (const areaId of state.product.areas) {
+                    const area = state.areas[areaId];
+                    if (area && area.clipPath) {
+                        drawPanelOutline(area.clipPath, AREA_COLORS[areaId], AREA_LABELS[areaId].toUpperCase());
+                    }
+                }
+            }
+
+            // Draw handles for active area
+            const showHandles = document.getElementById('showHandles')?.checked ?? true;
+            if (showHandles && state.activeArea) {
+                const area = state.areas[state.activeArea];
+                const color = AREA_COLORS[state.activeArea] || '#4ecdc4';
+
+                if (area && area.artworkCorners) {
+                    drawArtworkBoundary(area.artworkCorners, color);
+                    area.artworkCorners.forEach((corner, i) => {
+                        const isActive = state.dragging && state.dragCornerIndex === i;
+                        drawHandle(corner.x, corner.y, color, isActive);
+                    });
+                }
+            }
+        }
+
+        // Get canvas coordinates
+        function getCanvasCoords(e) {
+            const rect = canvas.getBoundingClientRect();
+            const scaleX = 2000 / rect.width;
+            const scaleY = 2000 / rect.height;
+            return {
+                x: (e.clientX - rect.left) * scaleX,
+                y: (e.clientY - rect.top) * scaleY
+            };
+        }
+
+        // Find handle at position
+        function findHandleAt(x, y) {
+            if (!state.activeArea) return -1;
+            const area = state.areas[state.activeArea];
+            if (!area || !area.artworkCorners) return -1;
+
+            const hitRadius = HANDLE_RADIUS * 2.5;
+            for (let i = 0; i < area.artworkCorners.length; i++) {
+                const c = area.artworkCorners[i];
+                const dist = Math.sqrt((x - c.x) ** 2 + (y - c.y) ** 2);
+                if (dist < hitRadius) return i;
+            }
+            return -1;
+        }
+
+        // Mouse handlers
+        function onMouseDown(e) {
+            const coords = getCanvasCoords(e);
+            const handleIndex = findHandleAt(coords.x, coords.y);
+
+            if (handleIndex >= 0) {
+                state.dragging = true;
+                state.dragCornerIndex = handleIndex;
+                state.dragArea = state.activeArea;
+                canvas.classList.add('dragging');
+                e.preventDefault();
+            }
+        }
+
+        function onMouseMove(e) {
+            const coords = getCanvasCoords(e);
+
+            if (state.dragging && state.dragCornerIndex >= 0 && state.dragArea) {
+                const area = state.areas[state.dragArea];
+                if (area && area.artworkCorners) {
+                    area.artworkCorners[state.dragCornerIndex] = { x: coords.x, y: coords.y };
+                    render();
+                }
+            } else {
+                const handleIndex = findHandleAt(coords.x, coords.y);
+                if (handleIndex >= 0) {
+                    canvas.classList.add('hovering-handle');
+                } else {
+                    canvas.classList.remove('hovering-handle');
+                }
+            }
+        }
+
+        function onMouseUp() {
+            if (state.dragging) {
+                state.dragging = false;
+                state.dragCornerIndex = -1;
+                state.dragArea = null;
+                canvas.classList.remove('dragging');
+            }
+        }
+
+        // Handle file upload
+        async function handleFileUpload(file, areaId) {
+            if (!file) return;
+
+            loadingOverlay.classList.add('active');
+
+            try {
+                let imageData;
+
+                if (file.type === 'application/pdf') {
+                    const arrayBuffer = await file.arrayBuffer();
+                    const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+                    const page = await pdf.getPage(1);
+                    const scale = 2;
+                    const viewport = page.getViewport({ scale });
+                    const pdfCanvas = document.createElement('canvas');
+                    pdfCanvas.width = viewport.width;
+                    pdfCanvas.height = viewport.height;
+                    await page.render({ canvasContext: pdfCanvas.getContext('2d'), viewport }).promise;
+                    imageData = pdfCanvas;
+                } else {
+                    imageData = await createImageBitmap(file);
+                }
+
+                const area = state.areas[areaId];
+                area.artwork = imageData;
+                area.filename = file.name;
+                area.artworkCorners = initArtworkCorners(area.panelCorners, imageData.width, imageData.height);
+
+                // Update UI
+                const thumbPreview = document.getElementById(`thumb-${areaId}`);
+                const thumbImg = document.getElementById(`thumbImg-${areaId}`);
+                const filenameEl = document.getElementById(`filename-${areaId}`);
+                const clearBtn = document.getElementById(`clear-${areaId}`);
+                const uploadArea = document.getElementById(`upload-${areaId}`);
+
+                if (imageData instanceof HTMLCanvasElement) {
+                    thumbImg.src = imageData.toDataURL();
+                } else {
+                    const tc = document.createElement('canvas');
+                    tc.width = imageData.width;
+                    tc.height = imageData.height;
+                    tc.getContext('2d').drawImage(imageData, 0, 0);
+                    thumbImg.src = tc.toDataURL();
+                }
+
+                filenameEl.textContent = file.name;
+                thumbPreview.style.display = 'flex';
+                clearBtn.style.display = 'inline-block';
+                uploadArea.classList.add('has-artwork');
+
+                document.getElementById('downloadBtn').disabled = false;
+                state.activeArea = areaId;
+                updatePanelSelection();
+                render();
+
+            } catch (error) {
+                console.error('Error processing file:', error);
+            } finally {
+                loadingOverlay.classList.remove('active');
+            }
+        }
+
+        function clearAreaArtwork(areaId) {
+            const area = state.areas[areaId];
+            if (area) {
+                area.artwork = null;
+                area.filename = '';
+                area.artworkCorners = null;
+            }
+
+            document.getElementById(`thumb-${areaId}`).style.display = 'none';
+            document.getElementById(`clear-${areaId}`).style.display = 'none';
+            document.getElementById(`upload-${areaId}`).classList.remove('has-artwork');
+
+            const hasAnyArtwork = state.product.areas.some(id => state.areas[id]?.artwork);
+            document.getElementById('downloadBtn').disabled = !hasAnyArtwork;
+            render();
+        }
+
+        function updatePanelSelection() {
+            document.querySelectorAll('.panel-select-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.area === state.activeArea);
+            });
+        }
+
+        function downloadPreview() {
+            const showHandles = document.getElementById('showHandles');
+            const wasChecked = showHandles.checked;
+            showHandles.checked = false;
+            render();
+
+            const link = document.createElement('a');
+            link.download = `${state.product.id}-branded.png`;
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+
+            showHandles.checked = wasChecked;
+            render();
+        }
+
+        function resetAll() {
+            for (const areaId of state.product.areas) {
+                clearAreaArtwork(areaId);
+            }
+        }
+
+        // Build the UI dynamically based on product areas
+        function buildUI() {
+            const product = state.product;
+
+            // Build upload areas HTML
+            const uploadAreasHTML = product.areas.map(areaId => `
+                <div class="upload-box">
+                    <div class="upload-box-label">
+                        <span class="dot" style="background: ${AREA_COLORS[areaId]}"></span>
+                        ${AREA_LABELS[areaId]}
+                    </div>
+                    <div class="upload-area" id="upload-${areaId}" data-area="${areaId}">
+                        <div class="upload-icon">+</div>
+                        <div class="upload-text">Drop or <span>browse</span></div>
+                    </div>
+                    <input type="file" id="fileInput-${areaId}" accept="image/png,image/jpeg,application/pdf" data-area="${areaId}">
+                    <div class="thumbnail-preview" id="thumb-${areaId}" style="display: none;">
+                        <img id="thumbImg-${areaId}" alt="${AREA_LABELS[areaId]} artwork">
+                        <div class="thumbnail-info">
+                            <div class="filename" id="filename-${areaId}"></div>
+                        </div>
+                    </div>
+                    <button class="btn btn-secondary btn-small" id="clear-${areaId}" style="display: none;">Clear</button>
+                </div>
+            `).join('');
+
+            // Build panel select buttons
+            const panelSelectHTML = product.areas.map(areaId => `
+                <button class="panel-select-btn ${areaId === state.activeArea ? 'active' : ''}"
+                        data-area="${areaId}"
+                        style="border-color: ${areaId === state.activeArea ? AREA_COLORS[areaId] : ''};
+                               color: ${areaId === state.activeArea ? AREA_COLORS[areaId] : ''}">
+                    ${AREA_LABELS[areaId]}
+                </button>
+            `).join('');
+
+            const mainHTML = `
+                <div class="main-layout">
+                    <div class="controls-panel">
+                        <div class="section">
+                            <div class="section-title">Upload Artwork</div>
+                            <div class="upload-grid">
+                                ${uploadAreasHTML}
+                            </div>
+                        </div>
+
+                        <div class="section">
+                            <div class="section-title">Adjust Artwork</div>
+                            <div class="instructions">
+                                <strong>Drag corners</strong> on the preview to position your artwork.
+                                Select which area to edit below.
+                            </div>
+                            <div class="panel-select">
+                                ${panelSelectHTML}
+                            </div>
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="showHandles" checked>
+                                <label for="showHandles">Show corner handles</label>
+                            </div>
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="showOutlines">
+                                <label for="showOutlines">Show panel outlines</label>
+                            </div>
+                        </div>
+
+                        <div class="section">
+                            <button class="btn btn-secondary" id="resetBtn">Reset All</button>
+                            <button class="btn btn-primary" id="downloadBtn" disabled>Download Preview</button>
+                        </div>
+                    </div>
+
+                    <div class="preview-panel">
+                        <div class="canvas-container">
+                            <canvas id="previewCanvas" width="2000" height="2000"></canvas>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('mainContent').innerHTML = mainHTML;
+            const initLoader = document.getElementById('initialLoader');
+            if (initLoader) initLoader.classList.remove('active');
+
+            // Get canvas reference
+            canvas = document.getElementById('previewCanvas');
+            ctx = canvas.getContext('2d');
+
+            // Setup event listeners
+            setupEventListeners();
+        }
+
+        function setupEventListeners() {
+            // Canvas mouse events
+            canvas.addEventListener('mousedown', onMouseDown);
+            canvas.addEventListener('mousemove', onMouseMove);
+            canvas.addEventListener('mouseup', onMouseUp);
+            canvas.addEventListener('mouseleave', onMouseUp);
+
+            // Setup upload areas for each branding area
+            for (const areaId of state.product.areas) {
+                const uploadArea = document.getElementById(`upload-${areaId}`);
+                const fileInput = document.getElementById(`fileInput-${areaId}`);
+                const clearBtn = document.getElementById(`clear-${areaId}`);
+
+                uploadArea.addEventListener('click', () => fileInput.click());
+                uploadArea.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    uploadArea.classList.add('dragover');
+                });
+                uploadArea.addEventListener('dragleave', (e) => {
+                    e.preventDefault();
+                    uploadArea.classList.remove('dragover');
+                });
+                uploadArea.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    uploadArea.classList.remove('dragover');
+                    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+                        handleFileUpload(e.dataTransfer.files[0], areaId);
+                    }
+                });
+                fileInput.addEventListener('change', () => {
+                    if (fileInput.files && fileInput.files[0]) {
+                        handleFileUpload(fileInput.files[0], areaId);
+                    }
+                });
+                clearBtn.addEventListener('click', () => clearAreaArtwork(areaId));
+            }
+
+            // Panel selection
+            document.querySelectorAll('.panel-select-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    state.activeArea = btn.dataset.area;
+                    updatePanelSelection();
+                    render();
+                });
+            });
+
+            // Other controls
+            document.getElementById('showHandles').addEventListener('change', render);
+            document.getElementById('showOutlines').addEventListener('change', render);
+            document.getElementById('downloadBtn').addEventListener('click', downloadPreview);
+            document.getElementById('resetBtn').addEventListener('click', resetAll);
+        }
+
+        // Initialize
+        async function init() {
+            const productId = getProductId();
+
+            if (!productId) {
+                document.getElementById('mainContent').innerHTML = `
+                    <div class="error-state">
+                        <h2>No product selected</h2>
+                        <p><a href="/" class="back-btn">Go back to menu</a></p>
+                    </div>
+                `;
+                const initLoader = document.getElementById('initialLoader');
+                if (initLoader) initLoader.classList.remove('active');
+                return;
+            }
+
+            try {
+                // Load product data
+                const response = await fetch(`/api/products/${productId}`);
+                if (!response.ok) throw new Error('Product not found');
+                state.product = await response.json();
+
+                document.getElementById('pageTitle').textContent = state.product.name;
+                document.title = `${state.product.name} - Staycold Branding Visualiser`;
+
+                // Set first area as active
+                if (state.product.areas.length > 0) {
+                    state.activeArea = state.product.areas[0];
+                }
+
+                // Load images
+                const baseUrl = `/products/${productId}/`;
+
+                // Load main image
+                if (state.product.images && state.product.images.main) {
+                    state.mainImage = await loadImage(baseUrl + state.product.images.main);
+                } else {
+                    throw new Error('No main image for this product');
+                }
+
+                // Load overlay if exists
+                if (state.product.hasOverlay && state.product.images.overlay) {
+                    try {
+                        state.overlayImage = await loadImage(baseUrl + state.product.images.overlay);
+                    } catch (e) {
+                        console.warn('Could not load overlay:', e);
+                    }
+                }
+
+                // Load masks for each area and initialize area state
+                for (const areaId of state.product.areas) {
+                    const maskKey = `mask-${areaId}`;
+                    if (state.product.images && state.product.images[maskKey]) {
+                        const maskImg = await loadImage(baseUrl + state.product.images[maskKey]);
+                        const maskData = extractPanelMask(maskImg);
+
+                        state.areas[areaId] = {
+                            mask: maskData,
+                            clipPath: extractClipPath(maskData),
+                            panelCorners: findPanelCorners(maskData),
+                            artwork: null,
+                            filename: '',
+                            artworkCorners: null
+                        };
+                    } else {
+                        console.warn(`No mask for area: ${areaId}`);
+                        // Create placeholder area
+                        state.areas[areaId] = {
+                            mask: null,
+                            clipPath: null,
+                            panelCorners: [
+                                { x: 500, y: 500 }, { x: 1500, y: 500 },
+                                { x: 1500, y: 1500 }, { x: 500, y: 1500 }
+                            ],
+                            artwork: null,
+                            filename: '',
+                            artworkCorners: null
+                        };
+                    }
+                }
+
+                // Build UI and render
+                buildUI();
+                render();
+
+            } catch (error) {
+                console.error('Error initializing:', error);
+                document.getElementById('mainContent').innerHTML = `
+                    <div class="error-state">
+                        <h2>Error loading product</h2>
+                        <p>${error.message}</p>
+                        <p><a href="/" class="back-btn">Go back to menu</a></p>
+                    </div>
+                `;
+                const initLoader = document.getElementById('initialLoader');
+                if (initLoader) initLoader.classList.remove('active');
+            }
+        }
+
+        init();
+    </script>
+</body>
+</html>
