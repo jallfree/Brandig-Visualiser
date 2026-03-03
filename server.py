@@ -232,8 +232,8 @@ if __name__ == '__main__':
     print("=" * 50)
     print("Staycold Branding Visualiser Server")
     print("=" * 50)
-    print(f"Home page:    http://localhost:5050/")
-    print(f"Settings:     http://localhost:5050/settings")
+    print(f"Home page:    http://localhost:5051/")
+    print(f"Settings:     http://localhost:5051/settings")
     print("=" * 50)
 
-    app.run(host='localhost', port=5050, debug=True)
+    app.run(host='localhost', port=5051, debug=True)
