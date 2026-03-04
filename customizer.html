@@ -130,7 +130,7 @@
         .upload-area {
             border: 2px dashed #3a4a6a;
             border-radius: 8px;
-            padding: 15px 10px;
+            padding: 24px 10px;
             text-align: center;
             cursor: pointer;
             transition: all 0.3s ease;
@@ -153,7 +153,7 @@
         }
 
         .upload-icon {
-            font-size: 24px;
+            font-size: 28px;
             margin-bottom: 4px;
             opacity: 0.6;
             pointer-events: none;
@@ -819,12 +819,32 @@
             // Draw each area's artwork
             for (const areaId of state.product.areas) {
                 const area = state.areas[areaId];
-                if (area && area.artwork && area.artworkCorners && area.clipPath) {
+                if (area && area.artwork && area.artworkCorners) {
                     const artCanvas = drawPerspectiveArtwork(area.artwork, area.artworkCorners);
-                    ctx.save();
-                    applyClipPath(area.clipPath);
-                    ctx.drawImage(artCanvas, 0, 0);
-                    ctx.restore();
+
+                    if (area.maskImage) {
+                        // Pixel-perfect masking using the original mask PNG
+                        const maskCanvas = document.createElement('canvas');
+                        maskCanvas.width = 2000;
+                        maskCanvas.height = 2000;
+                        const maskCtx = maskCanvas.getContext('2d');
+
+                        // Draw the perspective artwork
+                        maskCtx.drawImage(artCanvas, 0, 0);
+
+                        // Use destination-in to clip artwork to mask alpha channel
+                        maskCtx.globalCompositeOperation = 'destination-in';
+                        maskCtx.drawImage(area.maskImage, 0, 0, 2000, 2000);
+
+                        // Draw the masked result onto the main canvas
+                        ctx.drawImage(maskCanvas, 0, 0);
+                    } else if (area.clipPath) {
+                        // Fallback to polygon clip path if no mask image
+                        ctx.save();
+                        applyClipPath(area.clipPath);
+                        ctx.drawImage(artCanvas, 0, 0);
+                        ctx.restore();
+                    }
                 }
             }
 
@@ -955,7 +975,13 @@
                 const area = state.areas[areaId];
                 area.artwork = imageData;
                 area.filename = file.name;
-                area.artworkCorners = initArtworkCorners(area.panelCorners, imageData.width, imageData.height);
+                if (area.configCorners) {
+                    // Config exists: map artwork directly to the specified corners
+                    area.artworkCorners = area.configCorners.map(c => ({ ...c }));
+                } else {
+                    // No config: use existing centered-rectangle behaviour
+                    area.artworkCorners = initArtworkCorners(area.panelCorners, imageData.width, imageData.height);
+                }
 
                 // Update UI
                 const thumbPreview = document.getElementById(`thumb-${areaId}`);
@@ -1211,6 +1237,17 @@
                     state.activeArea = state.product.areas[0];
                 }
 
+                // Load config.json positioning data (if exists)
+                let productConfig = {};
+                try {
+                    const configResponse = await fetch(`/api/products/${productId}/config`);
+                    if (configResponse.ok) {
+                        productConfig = await configResponse.json();
+                    }
+                } catch (e) {
+                    console.warn('Could not load config:', e);
+                }
+
                 // Load images
                 const baseUrl = `/products/${productId}/`;
 
@@ -1237,10 +1274,16 @@
                         const maskImg = await loadImage(baseUrl + state.product.images[maskKey]);
                         const maskData = extractPanelMask(maskImg);
 
+                        // Use config.json corners if available, fallback to mask-derived
+                        const configArea = productConfig.areas && productConfig.areas[areaId];
+                        const configCorners = configArea ? configArea.corners.map(c => ({ x: c[0], y: c[1] })) : null;
+
                         state.areas[areaId] = {
                             mask: maskData,
+                            maskImage: maskImg,
                             clipPath: extractClipPath(maskData),
-                            panelCorners: findPanelCorners(maskData),
+                            panelCorners: configCorners || findPanelCorners(maskData),
+                            configCorners: configCorners,
                             artwork: null,
                             filename: '',
                             artworkCorners: null

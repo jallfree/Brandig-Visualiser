@@ -62,6 +62,15 @@ def serve_product_image(product_id, filename):
     product_dir = os.path.join(PRODUCTS_DIR, product_id)
     return send_from_directory(product_dir, filename)
 
+# API: Get product config (positioning data)
+@app.route('/api/products/<product_id>/config', methods=['GET'])
+def get_product_config(product_id):
+    config_path = os.path.join(PRODUCTS_DIR, product_id, 'config.json')
+    if os.path.exists(config_path):
+        with open(config_path, 'r') as f:
+            return jsonify(json.load(f))
+    return jsonify({}), 200
+
 # API: Get all products
 @app.route('/api/products', methods=['GET'])
 def get_products():
