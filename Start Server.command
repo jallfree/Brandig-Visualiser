@@ -1,13 +1,13 @@
 #!/bin/bash
 
-# Staycold Branding Visualiser - Start Script
+# BrandReady - Start Script
 # Double-click this file to start the server
 
 # Get the directory where this script is located
 cd "$(dirname "$0")"
 
 echo "=================================================="
-echo "  Staycold Branding Visualiser"
+echo "  BrandReady"
 echo "=================================================="
 echo ""
 echo "Starting server..."
@@ -22,7 +22,7 @@ if [ $? -ne 0 ]; then
 fi
 
 # Open browser after a short delay
-(sleep 2 && open "http://localhost:5050/") &
+(sleep 2 && open "http://localhost:5051/") &
 
 # Start the server
 python3 server.py

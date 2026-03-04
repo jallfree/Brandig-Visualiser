@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Staycold Branding Visualiser Server
+BrandReady Server
 Handles file serving, product management, and image uploads
 """
 
@@ -239,7 +239,7 @@ if __name__ == '__main__':
     os.makedirs(PRODUCTS_DIR, exist_ok=True)
 
     print("=" * 50)
-    print("Staycold Branding Visualiser Server")
+    print("BrandReady Server")
     print("=" * 50)
     print(f"Home page:    http://localhost:5051/")
     print(f"Settings:     http://localhost:5051/settings")

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Staycold Branding Visualiser</title>
+    <title>BrandReady</title>
     <style>
         * {
             margin: 0;
@@ -395,7 +395,7 @@
     <div class="container">
         <div class="header">
             <a href="/" class="back-btn">Back to Menu</a>
-            <h1>Staycold Branding Visualiser - <span id="pageTitle">Loading...</span></h1>
+            <h1>BrandReady - <span id="pageTitle">Loading...</span></h1>
         </div>
 
         <div id="mainContent">
@@ -1230,7 +1230,7 @@
                 state.product = await response.json();
 
                 document.getElementById('pageTitle').textContent = state.product.name;
-                document.title = `${state.product.name} - Staycold Branding Visualiser`;
+                document.title = `${state.product.name} - BrandReady`;
 
                 // Set first area as active
                 if (state.product.areas.length > 0) {

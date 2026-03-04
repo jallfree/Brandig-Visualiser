@@ -1,9 +1,9 @@
-# Branding Visualiser — Next.js Integration Brief
+# BrandReady — Next.js Integration Brief
 
 ## What This Is
-A client-side branding visualiser that lets users upload artwork (PNG, JPEG, PDF) and see it applied to product images with perspective correction. Everything runs in the browser — no server-side processing needed.
+BrandReady is a client-side branding visualiser that lets users upload artwork (PNG, JPEG, PDF) and see it applied to product images with perspective correction. Everything runs in the browser — no server-side processing needed.
 
-The standalone version lives at `/Users/justinmacmini/Branding Visualiser/` and runs on Flask (for local development only). This brief describes how to integrate it into the Rhino Next.js website.
+The standalone version lives at `/Users/justinmacmini/Branding Visualiser/` and runs on Flask (for local development only). This brief describes how to integrate BrandReady into the Rhino Next.js website.
 
 ---
 
@@ -34,7 +34,7 @@ These are all in `customizer.html` and should become utility functions in the Re
 - `initArtworkCorners(panelCorners, artWidth, artHeight)` — creates centered rectangle placement (fallback)
 
 ### Branding Assets Per Product
-Each product that supports the visualiser needs these files. All images are 2000x2000px PNGs:
+Each product that supports BrandReady needs these files. All images are 2000x2000px PNGs:
 
 - **Base image** (`main.png`) — clean product photo
 - **Mask PNGs** (one per branding area) — white on transparent, defining the clipping region (e.g. `mask-front.png`, `mask-side.png`, `mask-canopy.png`, `mask-glass.png`)
@@ -60,7 +60,7 @@ These are measured in Photoshop using the Info panel (F8) at each corner of the 
 
 ### 1. PIM Feed — Source of All Branding Data
 
-All branding visualiser data comes from the PIM system, just like regular product data. The PIM stores:
+All BrandReady data comes from the PIM system, just like regular product data. The PIM stores:
 
 - **Branding images**: base image, mask PNGs, overlay PNG (uploaded to PIM per product)
 - **Corner coordinates**: XY coordinates per branding area (stored as fields in PIM per product)
@@ -118,7 +118,7 @@ Products without branding support simply don't have the `branding` field — no 
 Add functions to access branding data:
 
 ```typescript
-// Check if a product has branding visualiser support
+// Check if a product has BrandReady support
 export function hasBrandingVisualiser(product: Product): boolean {
   return !!product.branding && Object.keys(product.branding.areas).length > 0;
 }
@@ -150,7 +150,7 @@ export interface BrandingVisualiserProps {
 }
 ```
 
-### 5. React Component — src/components/product/BrandingVisualiser.tsx
+### 5. React Component — src/components/product/BrandReady.tsx
 
 This is a `'use client'` component. It receives the branding config as props (passed from the server component page).
 
@@ -169,7 +169,7 @@ Key implementation notes:
 Structure:
 ```
 src/components/product/
-├── BrandingVisualiser.tsx        # Main 'use client' component
+├── BrandReady.tsx               # Main 'use client' component
 ├── branding/
 │   ├── useBrandingEngine.ts     # Custom hook: canvas rendering, homography, drag handling
 │   ├── perspective.ts           # Pure functions: computeHomography, inverseHomography, etc.
@@ -238,7 +238,7 @@ function validateFile(file: File): string | null {
 
 ### 10. Performance / Loading
 
-- Lazy-load the branding visualiser component (dynamic import with `next/dynamic`)
+- Lazy-load the BrandReady component (dynamic import with `next/dynamic`)
 - Show a loading skeleton while product images load
 
 ### 11. Image Optimisation — AVIF Conversion
@@ -325,9 +325,9 @@ For each product you want to add branding support to:
 
 ## Testing Checklist
 
-1. Product with branding data in PIM shows "Branding Visualiser" button on website
+1. Product with branding data in PIM shows "BrandReady" button on website
 2. Product without branding data does NOT show the button
-3. Visualiser loads and displays the product image correctly
+3. BrandReady loads and displays the product image correctly
 4. Dropping PNG artwork auto-fits to the defined corners
 5. Dropping JPEG artwork works
 6. Dropping PDF artwork works (renders first page)
